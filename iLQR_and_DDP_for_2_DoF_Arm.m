@@ -10,8 +10,11 @@ symbolic_2_link_dynamics
 %% --- initial state + optimization parameters ---
 X0s = {{[-pi/6;0;0;0],200},{[-pi;0;0;0],250},{[-pi/2;0;0;0],450},{[-pi/2;0;0;0],800}};
 
-% --- uncomment for different initial states --- 
-x0=X0s{4}{1}; N=X0s{4}{2};  
+% --- uncomment for different initial states and time horizonts --- 
+x0=X0s{1}{1}; N=X0s{1}{2};
+% x0=X0s{2}{1}; N=X0s{2}{2};  
+% x0=X0s{3}{1}; N=X0s{3}{2};  
+% x0=X0s{4}{1}; N=X0s{4}{2};  
 %-------------------------------------------
 
 lambda_init=1000; %initial regularization
