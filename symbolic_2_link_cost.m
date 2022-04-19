@@ -1,3 +1,10 @@
+% --- DESCRIPTION---
+% This script generates running and final cost in the symbolic form. 
+% The running cost (the cost at each time step up) is only the function of
+% input torques U. Final cost penalizes deviations from the final state:
+% [pi/2 0 0 0]. This script is used only if the symbolic differentiation
+% method is selected.
+% ------------------
 
 syms X [4 1] real
 syms U [2 1] real

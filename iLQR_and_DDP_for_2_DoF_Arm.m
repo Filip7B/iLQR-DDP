@@ -1,4 +1,6 @@
 %% ---- Swing up task of 2 dof arm using iLQR or DDP ----
+% This is the main script for setting up the optimization parameters,
+% running the iLQR/DDP and visualizing the generated trajectory.
 
 clear; close all; clc;
 
@@ -8,6 +10,8 @@ symbolic_2_link_dynamics
 
 
 %% --- initial state + optimization parameters ---
+% Feel free to change the parameters.
+
 X0s = {{[-pi/6;0;0;0],200},{[-pi;0;0;0],250},{[-pi/2;0;0;0],450},{[-pi/2;0;0;0],800}};
 
 % --- uncomment for different initial states and time horizonts --- 
@@ -54,25 +58,21 @@ Graph(X_f,dt,model_params,method)
   
 function Graph(X_r,dt,model_params,method)
 
+    L1=model_params(3); L2=model_params(4);
+    if strcmp(method,'numerical')
+        X_r = X_r';
+    end
 
-L1=model_params(3); L2=model_params(4);
-if strcmp(method,'numerical')
-    X_r = X_r';
-end
+    f1=figure;
+    ax=axes(f1);ax.XLim=[-2 2];ax.YLim=[-2 2];ax.XGrid='ON';ax.YGrid='ON';
+    Link1 = line(ax,'XData',[0, L1*cos(X_r(1,1))],'YData',[0, L1*sin(X_r(1,1))],'lineWidth',4,'color','blue'); 
+    Link2 = line(ax,'XData',[L1*cos(X_r(1,1)), L2*cos(X_r(1,1) + X_r(1,2)) + L1*cos(X_r(1,1))],'YData',[L1*sin(X_r(1,1)), L2*sin(X_r(1,1) + X_r(1,2)) + L1*sin(X_r(1,1))], 'lineWidth',5,'color','blue'); 
+    hs=[Link1;Link2];
+    pause(4*dt)
 
-f1=figure;
-ax=axes(f1);ax.XLim=[-2 2];ax.YLim=[-2 2];ax.XGrid='ON';ax.YGrid='ON';
-Link1 = line(ax,'XData',[0, L1*cos(X_r(1,1))],'YData',[0, L1*sin(X_r(1,1))],'lineWidth',4,'color','blue'); 
-Link2 = line(ax,'XData',[L1*cos(X_r(1,1)), L2*cos(X_r(1,1) + X_r(1,2)) + L1*cos(X_r(1,1))],'YData',[L1*sin(X_r(1,1)), L2*sin(X_r(1,1) + X_r(1,2)) + L1*sin(X_r(1,1))], 'lineWidth',5,'color','blue'); 
-hs=[Link1;Link2];
-pause(4*dt)
-
-    for i=2:size(X_r,1)
-        
-    set(hs,{'XData';'Ydata'},{[0, L1*cos(X_r(i,1))], [0, L1*sin(X_r(i,1))];[L1*cos(X_r(i,1)), L2*cos(X_r(i,1) + X_r(i,2)) + L1*cos(X_r(i,1))],[L1*sin(X_r(i,1)), L2*sin(X_r(i,1) + X_r(i,2)) + L1*sin(X_r(i,1))]})   
-
-    pause(dt)
-
+    for i=2:size(X_r,1) 
+        set(hs,{'XData';'Ydata'},{[0, L1*cos(X_r(i,1))], [0, L1*sin(X_r(i,1))];[L1*cos(X_r(i,1)), L2*cos(X_r(i,1) + X_r(i,2)) + L1*cos(X_r(i,1))],[L1*sin(X_r(i,1)), L2*sin(X_r(i,1) + X_r(i,2)) + L1*sin(X_r(i,1))]})   
+        pause(dt)
     end
     delete(Link1)
     delete(Link2)
